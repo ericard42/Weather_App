@@ -15,7 +15,7 @@ export class LocationService {
 		if (location)
 			return location
 		const that = this
-		 await axios.get('http://api.positionstack.com/v1/forward?access_key=' + this.configService.get<string>('API_KEY') +
+		return await axios.get('http://api.positionstack.com/v1/forward?access_key=' + this.configService.get<string>('API_KEY') +
 		'&query=' + city + '%20' + country + '&limit=1')
 			.then(async function (res) {
 				if (res.data.data.length <= 0)
@@ -26,12 +26,11 @@ export class LocationService {
 				const longitude = res.data.data[0].longitude
 				if (findCity !== city || findCountry !== country)
 					throw new BadRequestException('Location doesn\'t exist')
-				await that.addLocation(city, country, latitude, longitude)
+				return await that.addLocation(city, country, latitude, longitude)
 			})
 			.catch((err) => {
 				throw new HttpException(err.response.message, err.response.statusCode)
 			})
-		return location
 	}
 
 	async addLocation(city: string, country: string, latitude: number, longitude: number) {
