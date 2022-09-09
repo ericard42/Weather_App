@@ -31,6 +31,7 @@
     "bcrypt": "^5.0.1",
     "class-validator": "^0.13.2",
     "email-validator": "^2.0.4",
+    "moment": "^2.29.4",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",

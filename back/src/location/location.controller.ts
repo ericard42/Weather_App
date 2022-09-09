@@ -8,7 +8,8 @@ export class LocationController {
 
 	@Get()
 	async searchLocation(@Body() location: LocationDto) {
-		return await this.locationService.verifyLocation(location.city, location.country)
+		const loc = await this.locationService.verifyLocation(location.city, location.country)
+		return await this.locationService.getWeather(loc.id)
 	}
 
 }

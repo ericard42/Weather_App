@@ -51,4 +51,31 @@ export class LocationService {
 	async getLocationByID(id: number) {
 		return await this.locationRepository.findOneBy({id: id})
 	}
+
+	async getWeather(locationId: number) {
+		const location = await this.getLocationByID(locationId)
+		const date  = (Date.now() / 1000).toFixed(0).toString()
+
+		return await axios.get('https://api.open-meteo.com/v1/forecast?latitude=' + location.latitude +
+			'&longitude=' + location.longitude+ '&hourly=temperature_2m,precipitation&timeformat=unixtime')
+			.then(async function (res) {
+				let index = 0
+				res.data.hourly.time.forEach(val => {
+					if (val < +date)
+						index++
+				})
+				const temperature = res.data.hourly.temperature_2m[index]
+				const precipitation = res.data.hourly.precipitation[index]
+				return {
+					city: location.city,
+					country: location.country,
+					temperature: res.data.hourly.temperature_2m[index],
+					precipitation: res.data.hourly.precipitation[index],
+					hour: Date()
+				}
+			})
+			.catch((err) => {
+				throw new HttpException(err.response.message, err.response.statusCode)
+			})
+	}
 }
