@@ -12,6 +12,8 @@ import {CreateUserDto} from "../dto/create-user.dto";
 import * as bcrypt from 'bcrypt'
 import {ConnectUserDto} from "../dto/connect-user.dto";
 import {LocationService} from "../location/location.service";
+import {LocationEntity} from "../entities/location.entity";
+import * as EmailValidator from 'email-validator'
 
 @Injectable()
 export class UserService {
@@ -27,19 +29,33 @@ export class UserService {
 		await this.checkEmail(user.email)
 		await this.checkUsername(user.username)
 
-		let location = await this.locationService.verifyLocation(user.city, user.country)
+		let location: LocationEntity = await this.locationService.verifyLocation(user.city, user.country)
 		if (!location)
-			await this.locationService.addLocation()
-
+			location = await this.locationService.getLocation(user.city, user.country)
+		console.log(location)
 		const salt = await bcrypt.genSalt()
 		const newUser = {
 			email: user.email,
 			username: user.username,
 			password: await bcrypt.hash(user.password, salt),
-			location: 1,
-			favoriteLocations: new Array<number>()
+			location: location.id,
+			favoriteLocations: []
 		}
 		return await this.userRepository.save(newUser)
+	}
+
+	async getUser(id: number) {
+		const user = await this.userRepository.findOneBy({id: id})
+		if (!user)
+			throw new NotFoundException('User not found')
+		return user
+	}
+
+	async getUserByUsername(username: string) {
+		const user = await this.userRepository.findOneBy({username: username})
+		if (!user)
+			throw new NotFoundException('User not found')
+		return user
 	}
 
 	async checkUsername(username: string) {
@@ -48,6 +64,8 @@ export class UserService {
 	}
 
 	async checkEmail(email: string) {
+		if (!EmailValidator.validate(email))
+			throw new BadRequestException('Email is not valid')
 		if (await this.userRepository.findOneBy({email: email}))
 			throw new ConflictException('Email already used')
 	}

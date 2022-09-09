@@ -17,7 +17,4 @@ export class UserEntity {
 
 	@Column()
 	location: number
-
-	@Column("int", {array: true})
-	favoriteLocations: number[]
 }

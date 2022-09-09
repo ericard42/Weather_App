@@ -5,6 +5,7 @@ import {TypeOrmModule} from "@nestjs/typeorm";
 import { UserModule } from './user/user.module';
 import { LocationModule } from './location/location.module';
 import {ConfigModule} from "@nestjs/config";
+import { FavoriteModule } from './favorite/favorite.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -18,6 +19,7 @@ import {ConfigModule} from "@nestjs/config";
       }),
       UserModule,
       LocationModule,
+      FavoriteModule,
   ],
   controllers: [AppController],
   providers: [AppService],
