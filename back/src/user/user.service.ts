@@ -1,19 +1,18 @@
 import {
 	BadRequestException,
 	ConflictException,
-	ForbiddenException,
 	Injectable,
-	NotFoundException
+	NotFoundException, UseGuards
 } from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import { UserEntity } from "../entities/user.entity";
 import {Repository} from "typeorm";
 import {CreateUserDto} from "../dto/create-user.dto";
 import * as bcrypt from 'bcrypt'
-import {ConnectUserDto} from "../dto/connect-user.dto";
 import {LocationService} from "../location/location.service";
 import {LocationEntity} from "../entities/location.entity";
 import * as EmailValidator from 'email-validator'
+import {JwtAuthGuard} from "../auth/jwt-auth.guard";
 
 @Injectable()
 export class UserService {
@@ -44,11 +43,13 @@ export class UserService {
 		return await this.userRepository.save(newUser)
 	}
 
+	@UseGuards(JwtAuthGuard)
 	async getUser(id: number) {
 		const user = await this.userRepository.findOneBy({id: id})
 		if (!user)
 			throw new NotFoundException('User not found')
-		return user
+		const {password, ... result} = user
+		return result
 	}
 
 	async getUserByUsername(username: string) {
@@ -68,16 +69,5 @@ export class UserService {
 			throw new BadRequestException('Email is not valid')
 		if (await this.userRepository.findOneBy({email: email}))
 			throw new ConflictException('Email already used')
-	}
-
-	async connectUser(info: ConnectUserDto) {
-		if (!info.hasOwnProperty('email') || !info.hasOwnProperty('password'))
-			throw new BadRequestException()
-		const user = await this.userRepository.findOneBy({email: info.email})
-		if (!user)
-			throw new NotFoundException('Email doesn\'t exist')
-		if (!await bcrypt.compare(info.password, user.password))
-			throw new ForbiddenException('Wrong password')
-		return {username: user.username}
 	}
 }

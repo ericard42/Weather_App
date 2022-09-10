@@ -12,8 +12,8 @@ export class FavoriteService {
 				private locationService: LocationService,
 				@InjectRepository(FavoriteEntity) private favoriteRepository: Repository<FavoriteEntity>) {}
 
-	async addFavoriteLocation(city: string, country: string, username: string) {
-		const user = await this.userService.getUserByUsername(username)
+	async addFavoriteLocation(city: string, country: string, id: number) {
+		const user = await this.userService.getUser(id)
 		let location: LocationEntity = await this.locationService.verifyLocation(city, country)
 		if (!location)
 			location = await this.locationService.getLocation(city, country)
@@ -27,8 +27,8 @@ export class FavoriteService {
 		return await this.favoriteRepository.save(newFav)
 	}
 
-	async deleteFavoriteLocation(city: string, country: string, username: string) {
-		const user = await this.userService.getUserByUsername(username)
+	async deleteFavoriteLocation(city: string, country: string, id: number) {
+		const user = await this.userService.getUser(id)
 		let location: LocationEntity = await this.locationService.verifyLocation(city, country)
 		if (!location)
 			location = await this.locationService.getLocation(city, country)
@@ -39,8 +39,8 @@ export class FavoriteService {
 		return await this.favoriteRepository.delete(fav)
 	}
 
-	async getFavoriteList(username: string) {
-		const user = await this.userService.getUserByUsername(username)
+	async getFavoriteList(id: number) {
+		const user = await this.userService.getUser(id)
 		const fav = await this.favoriteRepository.find({where: {userId: user.id}})
 		if (fav.length <= 0)
 			return {isFavorite: false}

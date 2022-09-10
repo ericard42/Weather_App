@@ -3,8 +3,8 @@ import {Request, Response} from "express";
 
 @Injectable()
 export class AppLoggerMiddleware implements NestMiddleware {
-	private logger = new Logger('HTTP')
 	constructor() {}
+	private logger = new Logger('HTTP')
 
 	use(req: Request, res: Response, next: () => void) {
 		const {headers, method, originalUrl: url} = req
