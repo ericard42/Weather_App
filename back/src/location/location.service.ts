@@ -29,6 +29,8 @@ export class LocationService {
 				return await that.addLocation(city, country, latitude, longitude)
 			})
 			.catch((err) => {
+				if(err.response.statusText && err.reponse.status)
+					throw new HttpException(err.response.statusText, err.response.status)
 				throw new HttpException(err.response.message, err.response.statusCode)
 			})
 	}

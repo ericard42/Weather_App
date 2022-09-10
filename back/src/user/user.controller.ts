@@ -18,3 +18,4 @@ export class UserController {
 		return this.userService.connectUser(info)
 	}
 }
+
