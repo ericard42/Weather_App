@@ -1,12 +1,10 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import Link from 'next/link'
-import {useAmp} from "next/amp";
 import {useEffect, useState} from "react";
-import {getLocationOrigin} from "next/dist/shared/lib/utils";
 import axios from "axios";
 import {console} from "next/dist/compiled/@edge-runtime/primitives/console";
+import {getCookie, removeCookies} from "cookies-next";
 
 export function MyHead({title}) {
     return (
@@ -29,7 +27,7 @@ function MyTitle() {
 function Connexion() {
     return (
         <div className={styles.login_box}>
-            <Link href={"/sign-in"}>
+            <Link href={"/login"}>
                 <a className={styles.text}>
                     Login
                 </a>
@@ -72,36 +70,57 @@ function Search() {
 }
 
 export default function Home() {
-    const [loggedIn, setLoggedIn] = useState(false)
     const [name, setName] = useState("")
+    let username = ""
+    let token = ""
 
-    useEffect(() => {
-        console.log("Mounted")
-        if (loggedIn === false) {
-            console.log("Not Logged in")
-
-            axios({
-                method: 'get',
-                url: "http://localhost:3000/user/mlabouri",
-                headers: {
-                    Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1sYWJvdXJpIiwidXNlciI6IjYxMDMzNTIyLWYzNDItNGI1Ni1iZmE2LTgwN2I4ZTU5MmQ2MSIsImlhdCI6MTY2MzAwMTIzN30.icrbE1vgMtXL7yUd4DEUSVhm9B56djUlrhRnJ3EGSNk',
-                    "content-type": "application/json",
-                }
+    const checkUser = async () => {
+        axios({
+            method: 'get',
+            url: "http://localhost:3000/user/" + name,
+            headers: {
+                Authorization: 'Bearer ' + token,
+                "content-type": "application/json",
+            }
+        })
+            .then((response) => {
+                return true
             })
-                .then((response) => {
-                    console.log(response.data)
-                })
-                .catch((e) => {
-                    console.log("fess")
-                })
+            .catch((e) => {
+                return false
+            })
+    }
+
+    useEffect(  () => {
+        window.localStorage.setItem("session", 'nfesdecjnmeas')
+        window.localStorage.setItem('username', "ericard")
+
+        token = window.localStorage.getItem("session")
+        username = window.localStorage.getItem("username")
+
+        console.log(token)
+        console.log(username)
+        if (!token || !username) {
+            console.log("Not Logged in")
         }
         else {
-            console.log("Logged In")
+            (async () => {
+                console.log("Logged In")
+                if (await checkUser() === true) {
+                    console.log("Verification is good")
+                    setName(username)
+                }
+                else {
+                    console.log("Verification is bad")
+                    throw 'User not found'
+                }
+            })()
+                .catch((e) => {
+                    throw e
+                })
         }
-        return () => {
-            console.log("Unmounted")
-        }
-    })
+        return () => {}
+    }, [])
 
   return (
     <div className={styles.container}>
@@ -110,7 +129,7 @@ export default function Home() {
       <main className={styles.main}>
         <MyTitle/>
           <div className={styles.content}>
-              { loggedIn === true ? <Welcome username={name}/> : <Connexion/> }
+              { name !== "" ? <Welcome username={name}/> : <Connexion/> }
               <Search/>
           </div>
       </main>

@@ -1,7 +1,6 @@
+import styles from "../styles/Sign-In.module.css";
 import Link from "next/link";
-import Head from "next/head";
 import {MyHead} from "./index";
-import styles from '../styles/Sign-In.module.css'
 
 function FormBox({type, name}) {
     return (
@@ -16,12 +15,15 @@ function LoginBox() {
     return (
         <div className={styles.login_box}>
             <div className={styles.fields}>
-                <h2 className={styles.login_text}>Login</h2>
-                <FormBox type={'email'} name={"Email"}/>
+                <h2 className={styles.login_text}>Inscription</h2>
+                <FormBox type={'text'} name={"Username"}/>
                 <FormBox type={'password'} name={"Password"}/>
+                <FormBox type={'email'} name={"Email"}/>
+                <FormBox type={'text'} name={"City"}/>
+                <FormBox type={'text'} name={"Country"}/>
                 <Link href={"/"}>
                     <a><p className={styles.login_button}>
-                        Login
+                        Inscription
                     </p></a>
                 </Link>
             </div>
@@ -29,10 +31,10 @@ function LoginBox() {
     )
 }
 
-export default function SignIn() {
+export default function Inscription() {
     return (
         <>
-            <MyHead title={"Login"}/>
+            <MyHead title={"Inscription"}/>
             <main className={styles.main}>
                 <LoginBox/>
             </main>
