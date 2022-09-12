@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Post, Request, UnauthorizedException, UseGuards} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, Request, UnauthorizedException, UseGuards} from '@nestjs/common';
 import {UserService} from "./user.service";
 import {CreateUserDto} from "../dto/create-user.dto";
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
@@ -20,9 +20,11 @@ export class UserController {
 	}
 
 	@UseGuards(JwtAuthGuard)
-	@Get()
-	async getUser(@Request() req) {
-		if (req.user.username !== req.body.username)
+	@Get(':username')
+	async getUser(@Param('username') username: string, @Request() req) {
+		console.log(req.user.username)
+		console.log(req.body.username)
+		if (req.user.username !== username)
 			throw new UnauthorizedException('Username doesn\'t match with token')
 		return await this.userService.getUser(req.user.id)
 	}

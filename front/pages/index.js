@@ -2,6 +2,11 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import Link from 'next/link'
+import {useAmp} from "next/amp";
+import {useEffect, useState} from "react";
+import {getLocationOrigin} from "next/dist/shared/lib/utils";
+import axios from "axios";
+import {console} from "next/dist/compiled/@edge-runtime/primitives/console";
 
 export function MyHead({title}) {
     return (
@@ -21,15 +26,93 @@ function MyTitle() {
     )
 }
 
+function Connexion() {
+    return (
+        <div className={styles.login_box}>
+            <Link href={"/sign-in"}>
+                <a className={styles.text}>
+                    Login
+                </a>
+            </Link>
+            {" or "}
+            <Link href={"/inscription"}>
+                <a className={styles.text}>
+                    Inscription
+                </a>
+            </Link>
+        </div>
+    )
+}
+
+function Welcome({username}) {
+    return (
+        <h1>Welcome {username} !</h1>
+    )
+}
+
+function Favorites() {
+    return (
+        <></>
+    )
+}
+
+function CurrentLocation() {
+    return (
+        <></>
+    )
+}
+
+function Search() {
+    return (
+        <div className={styles.search_box}>
+            <h3>Search Location :</h3>
+            <input type={"text"} name={"location"}></input>
+        </div>
+    )
+}
+
 export default function Home() {
+    const [loggedIn, setLoggedIn] = useState(false)
+    const [name, setName] = useState("")
+
+    useEffect(() => {
+        console.log("Mounted")
+        if (loggedIn === false) {
+            console.log("Not Logged in")
+
+            axios({
+                method: 'get',
+                url: "http://localhost:3000/user/mlabouri",
+                headers: {
+                    Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1sYWJvdXJpIiwidXNlciI6IjYxMDMzNTIyLWYzNDItNGI1Ni1iZmE2LTgwN2I4ZTU5MmQ2MSIsImlhdCI6MTY2MzAwMTIzN30.icrbE1vgMtXL7yUd4DEUSVhm9B56djUlrhRnJ3EGSNk',
+                    "content-type": "application/json",
+                }
+            })
+                .then((response) => {
+                    console.log(response.data)
+                })
+                .catch((e) => {
+                    console.log("fess")
+                })
+        }
+        else {
+            console.log("Logged In")
+        }
+        return () => {
+            console.log("Unmounted")
+        }
+    })
+
   return (
     <div className={styles.container}>
       <MyHead title={'Home'}/>
 
       <main className={styles.main}>
         <MyTitle/>
-
-
+          <div className={styles.content}>
+              { loggedIn === true ? <Welcome username={name}/> : <Connexion/> }
+              <Search/>
+          </div>
       </main>
 
     </div>
