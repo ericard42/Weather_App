@@ -70,9 +70,8 @@ export class LocationService {
 				return {
 					city: location.city,
 					country: location.country,
-					temperature: res.data.hourly.temperature_2m[index],
-					precipitation: res.data.hourly.precipitation[index],
-					hour: Date()
+					weather: res.data.hourly.temperature_2m[index],
+					rain: res.data.hourly.precipitation[index],
 				}
 			})
 			.catch((err) => {

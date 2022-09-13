@@ -71,11 +71,11 @@ function LoginBox() {
 
 export default function Inscription() {
     return (
-        <>
+        <div>
             <MyHead title={"Inscription"}/>
             <main className={styles.main}>
                 <LoginBox/>
             </main>
-        </>
+        </div>
     )
 }

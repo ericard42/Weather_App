@@ -66,12 +66,12 @@ function LoginBox() {
 
 export default function Login() {
     return (
-        <>
+        <div>
             <MyHead title={"Login"}/>
             <main className={styles.main}>
                 <MyTitle/>
                 <LoginBox/>
             </main>
-        </>
+        </div>
     )
 }

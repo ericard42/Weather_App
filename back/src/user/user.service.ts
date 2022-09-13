@@ -28,7 +28,7 @@ export class UserService {
 		await this.checkEmail(user.email)
 		await this.checkUsername(user.username)
 
-		let location: LocationEntity = await this.locationService.verifyLocation(user.city, user.country)
+		let location: LocationEntity | void = await this.locationService.verifyLocation(user.city, user.country)
 		if (!location)
 			location = await this.locationService.getLocation(user.city, user.country)
 		console.log(location)
@@ -45,13 +45,16 @@ export class UserService {
 
 	@UseGuards(JwtAuthGuard)
 	async getUser(id: number) {
+		console.log(id)
 		if (!id)
 			throw new NotFoundException()
 		const user = await this.userRepository.findOneBy({id: id})
 		if (!user)
 			throw new NotFoundException('User not found')
 		const {password, ... result} = user
-		return result
+		const location = await this.locationService.getLocationByID(result.location)
+		return {data: result,
+				location: location}
 	}
 
 	async getUserByUsername(username: string) {

@@ -13,7 +13,7 @@ export class FavoriteController {
 					  @Body() location: LocationDto, @Request() req) {
 		if (req.user.username !== username)
 			throw new UnauthorizedException('Username doesn\'t match with token')
-		return this.favoriteService.addFavoriteLocation(location.city, location.country, req.id)
+		return this.favoriteService.addFavoriteLocation(location.city, location.country, req.user.userId)
 	}
 
 	@UseGuards(JwtAuthGuard)
@@ -22,7 +22,7 @@ export class FavoriteController {
 						 @Body() location: LocationDto, @Request() req) {
 		if (req.user.username !== username)
 			throw new UnauthorizedException('Username doesn\'t match with token')
-		return this.favoriteService.deleteFavoriteLocation(location.city, location.country, req.id)
+		return this.favoriteService.deleteFavoriteLocation(location.city, location.country, req.user.userId)
 	}
 
 	@UseGuards(JwtAuthGuard)
@@ -31,6 +31,6 @@ export class FavoriteController {
 					   @Request() req) {
 		if (req.user.username !== username)
 			throw new UnauthorizedException('Username doesn\'t match with token')
-		return this.favoriteService.getFavoriteList(req.id)
+		return this.favoriteService.getFavoriteList(req.user.userId)
 	}
 }
