@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "back": "cd back && npm run build && npm run start",
+    "front": "cd front && npm run build && npm run start",
+    "install": "concurrently \"cd back && npm install\" \"cd front && npm install\"",
+    "both": "concurrently \"npm run front\" \"npm run back\""
+  },
+  "dependencies": {
+    "concurrently": "^7.4.0"
+  }
+}
