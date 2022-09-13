@@ -9,7 +9,7 @@ export class AppController {
               private readonly authService: AuthService) {}
 
   @UseGuards(LocalAuthGuard)
-  @Post('auth/login')
+  @Post('auth')
   async login(@Request() req) {
     if (!req.body.hasOwnProperty('username') || !req.body.hasOwnProperty('password'))
       throw new BadRequestException('Field is missing')

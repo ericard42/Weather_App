@@ -12,7 +12,7 @@ export class UserController {
 	@Post()
 	async createUser(@Body() newUser: CreateUserDto) {
 		const user = await this.userService.createUser(newUser)
-		const payload = {username: user.username, user: user.id}
+		const payload = {username: user.username, sub: user.id}
 		return {
 			username: user.username,
 			access_token: this.jwtService.sign(payload)
@@ -22,11 +22,9 @@ export class UserController {
 	@UseGuards(JwtAuthGuard)
 	@Get(':username')
 	async getUser(@Param('username') username: string, @Request() req) {
-		console.log(req.user.username)
-		console.log(req.body.username)
 		if (req.user.username !== username)
 			throw new UnauthorizedException('Username doesn\'t match with token')
-		return await this.userService.getUser(req.user.id)
+		return await this.userService.getUser(req.user.userId)
 	}
 }
 

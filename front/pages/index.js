@@ -3,8 +3,6 @@ import styles from '../styles/Home.module.css'
 import Link from 'next/link'
 import {useEffect, useState} from "react";
 import axios from "axios";
-import {console} from "next/dist/compiled/@edge-runtime/primitives/console";
-import {getCookie, removeCookies} from "cookies-next";
 
 export function MyHead({title}) {
     return (
@@ -16,7 +14,7 @@ export function MyHead({title}) {
     )
 }
 
-function MyTitle() {
+export function MyTitle() {
     return ( <div className={styles.title}>
             <h1>Weather App</h1>
             <p>by <a href={"https://github.com/ericard42"}>ericard</a></p>
@@ -75,26 +73,25 @@ export default function Home() {
     let token = ""
 
     const checkUser = async () => {
-        axios({
-            method: 'get',
-            url: "http://localhost:3000/user/" + name,
+        const url = "http://localhost:3000/user/" + username
+        return await axios({
+            method: 'GET',
+            url: url,
             headers: {
                 Authorization: 'Bearer ' + token,
                 "content-type": "application/json",
             }
         })
             .then((response) => {
+                console.log('c bon')
                 return true
             })
-            .catch((e) => {
+            .catch(() => {
                 return false
             })
     }
 
     useEffect(  () => {
-        window.localStorage.setItem("session", 'nfesdecjnmeas')
-        window.localStorage.setItem('username', "ericard")
-
         token = window.localStorage.getItem("session")
         username = window.localStorage.getItem("username")
 

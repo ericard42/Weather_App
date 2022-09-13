@@ -45,6 +45,8 @@ export class UserService {
 
 	@UseGuards(JwtAuthGuard)
 	async getUser(id: number) {
+		if (!id)
+			throw new NotFoundException()
 		const user = await this.userRepository.findOneBy({id: id})
 		if (!user)
 			throw new NotFoundException('User not found')
