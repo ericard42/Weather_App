@@ -68,6 +68,15 @@
   align-items: center;
 }
 
+.content_search {
+  display: flex;
+  flex-direction: column;
+}
+
+.button_search {
+  margin-top: 5px;
+}
+
 .location {
   display: flex;
   flex-direction: column;
@@ -94,10 +103,6 @@
   align-items: center;
   justify-content: center;
   padding:2%;
-}
-
-.content_search {
-
 }
 
 .favorite_box {

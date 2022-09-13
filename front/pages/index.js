@@ -4,7 +4,6 @@ import Link from 'next/link'
 import {useEffect, useState} from "react";
 import axios from "axios";
 import {useRouter} from "next/router";
-import {useReducerWithReduxDevtools} from "next/dist/client/components/use-reducer-with-devtools";
 import Image from "next/image";
 
 export function MyHead({title}) {
@@ -109,6 +108,7 @@ function Favorites({tab, handleDelete, username, token}) {
                     {tab[index].country}<br/>
                     {tab[index].weather}°C<br/>
                     {tab[index].rain}%<br/>
+                    {index + 1} / {tab.length}<br/>
                     <button onClick={removeFav}>
                         <Image width={"20px"} height={"20px"} src={"/icons/star-in-fav.png"}/>
                     </button>
@@ -137,11 +137,130 @@ function CurrentLocation({city, country, weather, precipitation}) {
     )
 }
 
-function Search() {
+function Search({handleFav, username, token, tab, handleDelete}) {
+    const [fav, setFav] = useState(false)
+    const [search, setSearch] = useState("")
+    let router = useRouter()
+
+    const searchLocation = async (e) => {
+        let city = document.querySelector('#city').value
+        let country = document.querySelector('#country').value
+
+        e.preventDefault()
+        await axios ({
+            method: "POST",
+            url: 'http://localhost:3000/location',
+            data: {
+                city: city,
+                country: country,
+            }
+        })
+            .then ((res) => {
+                setSearch(res.data)
+                isFav(city, country)
+            })
+            .catch((e) => {
+                throw e
+            })
+    }
+
+    const removeFav = async () => {
+        let i = 0
+        for (i; tab[i]; i++) {
+            if (tab[i].city === search.city && tab[i].country === search.country)
+                break
+        }
+        if (i < 0 || i > tab.length)
+            return ;
+
+        await axios ({
+            method: "DELETE",
+            url: "http://localhost:3000/favorite/" + username,
+            data: {
+                city: tab[i].city,
+                country: tab[i].country
+            },
+            headers: {
+                Authorization: 'Bearer ' + token,
+                "content-type": "application/json",
+            }
+        })
+            .then(() => {
+                handleDelete(i)
+                setFav(false)
+            })
+            .catch((e) => {
+                throw e
+            })
+    }
+
+    const isFav = (city, country) => {
+        if (tab) {
+            for (let i = 0; tab[i]; i++) {
+                if (tab[i].city === city && tab[i].country === country) {
+                    setFav(true)
+                    return true
+                }
+            }
+        }
+        setFav(false)
+        return false
+    }
+
+    const addFav = async (e) => {
+        let location = {
+            city: search.city,
+            country: search.country,
+            weather: search.weather,
+            rain: search.rain
+        }
+        await axios ({
+            method: "POST",
+            url: 'http://localhost:3000/favorite/' + username,
+            data: {
+                city: location.city,
+                country: location.country
+            },
+            headers: {
+                Authorization: 'Bearer ' + token,
+                "content-type": "application/json",
+            }
+        })
+            .then(() => {
+                handleFav(location)
+                setFav(true)
+            })
+            .catch((e) => {
+                throw e
+            })
+    }
+
     return (
         <div className={styles.search_box}>
-            <h3>Search Location :</h3>
-            <input type={"text"} name={"location"}></input>
+            <form onSubmit={searchLocation} className={styles.content_search}>
+                <label htmlFor={"city"}>City :</label>
+                <input required type={'text'} id={"city"} name={"city"}/>
+                <label htmlFor={"country"}>Country :</label>
+                <input required type={'text'} id={"country"} name={"country"}/>
+                <button className={styles.button_search}>Search</button>
+            </form>
+            { search !== "" && (
+                <div className={styles.temperature}>
+                    {search.city}<br/>
+                    {search.country}<br/>
+                    {search.weather}°C<br/>
+                    {search.rain}%<br/>
+                    {fav === false ?
+                        <button onClick={addFav}>
+                        <Image width={"20px"} height={"20px"} src={"/icons/star.png"}/>
+                        </button>
+                        :
+                        <button onClick={removeFav}>
+                        <Image width={"20px"} height={"20px"} src={"/icons/star-in-fav.png"}/>
+                        </button>
+                    }
+                </div>
+            )}
         </div>
     )
 }
@@ -217,6 +336,16 @@ export default function Home() {
             })
     }
 
+    const handleAdd = (location) => {
+        let tab = []
+        if (location) {
+            if (curFav.isFavorite)
+                tab = curFav.Favorites.map(a => {return {...a}})
+            tab.push(location)
+            setCurFav({isFavorite: true, Favorites: tab})
+        }
+    }
+
     const handleDelete = (index) => {
         let tab = curFav.Favorites.map(a => {return {...a}})
         if (index > -1) {
@@ -264,7 +393,8 @@ export default function Home() {
           <div className={styles.content}>
               <div className={styles.content_left}>
                   { name !== "" ? <Welcome username={name}/> : <Connexion/> }
-                  <Search/>
+                  <Search handleFav={handleAdd} username={name} token={token}
+                            tab={curFav.Favorites} handleDelete={handleDelete}/>
               </div>
               <div className={styles.content_right}>
                   { name !== "" && (
