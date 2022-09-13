@@ -3,6 +3,8 @@ import styles from '../styles/Home.module.css'
 import Link from 'next/link'
 import {useEffect, useState} from "react";
 import axios from "axios";
+import {useRouter} from "next/router";
+import {useReducerWithReduxDevtools} from "next/dist/client/components/use-reducer-with-devtools";
 
 export function MyHead({title}) {
     return (
@@ -41,8 +43,20 @@ function Connexion() {
 }
 
 function Welcome({username}) {
+    const router = useRouter()
+
+    const disconnect = (e) => {
+        window.localStorage.clear()
+        router.reload()
+        return true
+    }
+
     return (
-        <h1>Welcome {username} !</h1>
+        <div className={styles.welcome}>
+            <p>Welcome {username} !</p>
+            <button onClick={disconnect} className={styles.text}>Disconnect</button>
+        </div>
+
     )
 }
 

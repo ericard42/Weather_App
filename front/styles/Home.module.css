@@ -43,6 +43,15 @@
   color: blue;
 }
 
+.welcome {
+  border: 1px solid white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 70%;
+  font-size: 30px
+}
+
 .search_box {
   display: flex;
   flex-direction: column;
