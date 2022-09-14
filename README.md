@@ -29,8 +29,6 @@ To use the back, you need an API Key from [here](https://positionstack.com/quick
 
 `API_KEY` : Key obtained from positionstack
 
-`SECRET_JWT` : Random key to use JWT passport
-
 
 ## Running App
 

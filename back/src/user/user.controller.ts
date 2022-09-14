@@ -19,6 +19,7 @@ export class UserController {
 		}
 	}
 
+
 	@UseGuards(JwtAuthGuard)
 	@Get(':username')
 	async getUser(@Param('username') username: string, @Request() req) {

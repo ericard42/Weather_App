@@ -28,7 +28,7 @@ export class LocationService {
 				if ((!findCity || findCity.toLowerCase() !== city.toLowerCase())
 					|| (!findCountry || findCountry.toLowerCase() !== country.toLowerCase()))
 					throw new BadRequestException('Location doesn\'t exist')
-				return await that.addLocation(city.toLowerCase(), country.toLowerCase(), latitude, longitude)
+				return await that.addLocation(city, country, latitude, longitude)
 			})
 			.catch((err) => {
 				if (err.response.statusText && err.reponse.status)
@@ -39,8 +39,8 @@ export class LocationService {
 
 	async addLocation(city: string, country: string, latitude: number, longitude: number) {
 		const newLocation = {
-			city: city,
-			country: country,
+			city: city.charAt(0).toUpperCase() + city.slice(1).toLowerCase(),
+			country: country.charAt(0).toUpperCase() + country.slice(1).toLowerCase(),
 			latitude: latitude,
 			longitude: longitude
 		}
@@ -70,8 +70,8 @@ export class LocationService {
 				const temperature = res.data.hourly.temperature_2m[index]
 				const precipitation = res.data.hourly.precipitation[index]
 				return {
-					city: location.city.charAt(0).toUpperCase() + location.city.slice(1).toLowerCase(),
-					country: location.country.charAt(0).toUpperCase() + location.city.slice(1).toLowerCase(),
+					city: location.city,
+					country: location.country,
 					weather: res.data.hourly.temperature_2m[index],
 					rain: res.data.hourly.precipitation[index],
 				}

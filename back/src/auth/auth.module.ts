@@ -5,11 +5,12 @@ import {PassportModule} from "@nestjs/passport";
 import {LocalStrategy} from "./local.strategy";
 import {JwtModule} from "@nestjs/jwt";
 import {JwtStrategy} from "./jwt.strategy";
+import {jwtConstants} from "./constants";
 
 @Module({
   imports: [UserModule, PassportModule,
   JwtModule.register({
-    secret: "" + process.env.SECRET_JWT,
+    secret: jwtConstants.secret
   })],
   providers: [AuthService, LocalStrategy, JwtStrategy],
   exports: [AuthService]

@@ -1,13 +1,17 @@
 import axios from "axios";
 import styles from "../../styles/Home.module.css";
 import Image from "next/image";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {deleteFavorite, postFavorite} from "../../queries/favorite";
 import {postLocation} from "../../queries/location";
 
 function Search({handleFav, username, token, tab, handleDelete}) {
     const [fav, setFav] = useState(false)
     const [search, setSearch] = useState("")
+
+    useEffect(() => {
+        isFav(search.city, search.country)
+    }, [tab])
 
     const searchLocation = async (e) => {
         let city = document.querySelector('#city').value

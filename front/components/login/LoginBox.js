@@ -19,12 +19,13 @@ function LoginBox() {
 
         await authUser(name, password)
             .then(async (res) => {
-                window.localStorage.setItem("session", res.data.access_token)
+                window.localStorage.setItem("session", res.access_token)
                 window.localStorage.setItem("username", name)
                 await router.push('/')
                 return true
             })
             .catch((e) => {
+                console.log(e)
                 alert("User doesn't exist. Please verify you username and password.")
                 return false
             })

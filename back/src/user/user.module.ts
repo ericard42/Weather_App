@@ -5,11 +5,12 @@ import {TypeOrmModule} from "@nestjs/typeorm";
 import {UserEntity} from "../entities/user.entity";
 import {LocationModule} from "../location/location.module";
 import {JwtModule} from "@nestjs/jwt";
+import {jwtConstants} from "../auth/constants";
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntity]), LocationModule,
     JwtModule.register({
-    secret: "" + process.env.SECRET_JWT,
+    secret: jwtConstants.secret,
   })],
   controllers: [UserController],
   providers: [UserService],

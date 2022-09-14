@@ -14,6 +14,7 @@ export class FavoriteService {
 				@InjectRepository(FavoriteEntity) private favoriteRepository: Repository<FavoriteEntity>) {}
 
 	async addFavoriteLocation(city: string, country: string, id: number) {
+		console.log(city, country)
 		if (!city || !country)
 			throw new BadRequestException()
 		const user = await this.userService.getUser(id)

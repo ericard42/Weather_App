@@ -36,7 +36,7 @@ export async function authUser(username, password) {
         method: 'POST',
         url: "http://localhost:3000/auth",
         data: {
-            username: name,
+            username: username,
             password: password
         }
     })
