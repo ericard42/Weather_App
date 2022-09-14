@@ -11,7 +11,10 @@ export class LocationService {
 				private configService: ConfigService) {}
 
 	async verifyLocation(city: string, country: string) {
-		let location: LocationEntity = await this.locationRepository.findOneBy({city: city.toLowerCase(), country: country.toLowerCase()})
+		city = city.charAt(0).toUpperCase() + city.slice(1).toLowerCase()
+		country = country.charAt(0).toUpperCase() + country.slice(1).toLowerCase()
+
+		let location: LocationEntity = await this.locationRepository.findOneBy({city: city, country: country})
 		if (location)
 			return location
 		const that = this
@@ -24,12 +27,12 @@ export class LocationService {
 				const findCountry = res.data.data[0].country
 				const latitude = res.data.data[0].latitude
 				const longitude = res.data.data[0].longitude
-				console.log(findCity)
-				if ((!findCity || findCity.toLowerCase() !== city.toLowerCase())
-					|| (!findCountry || findCountry.toLowerCase() !== country.toLowerCase()))
+				if ((!findCity || findCity !== city)
+					|| (!findCountry || findCountry !== country))
 					throw new BadRequestException('Location doesn\'t exist')
 				return await that.addLocation(city, country, latitude, longitude)
 			})
+
 			.catch((err) => {
 				if (err.response.statusText && err.reponse.status)
 					throw new HttpException(err.response.statusText, err.response.status)
@@ -39,8 +42,8 @@ export class LocationService {
 
 	async addLocation(city: string, country: string, latitude: number, longitude: number) {
 		const newLocation = {
-			city: city.charAt(0).toUpperCase() + city.slice(1).toLowerCase(),
-			country: country.charAt(0).toUpperCase() + country.slice(1).toLowerCase(),
+			city: city,
+			country: country,
 			latitude: latitude,
 			longitude: longitude
 		}
@@ -48,7 +51,7 @@ export class LocationService {
 	}
 
 	async getLocation(city: string, country: string) {
-		return await this.locationRepository.findOneBy({city: city.toLowerCase(), country: country.toLowerCase()})
+		return await this.locationRepository.findOneBy({city: city, country: country})
 	}
 
 	async getLocationByID(id: number) {

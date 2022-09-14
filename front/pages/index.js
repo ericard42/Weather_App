@@ -10,6 +10,9 @@ import {useEffect, useState} from "react";
 import {getFavorite} from "../queries/favorite";
 import {getTemp} from "../queries/location";
 import {getUser} from "../queries/user";
+import {Box, Paper} from "@mui/material";
+
+
 
 export default function Home() {
     const [name, setName] = useState("")
@@ -55,6 +58,8 @@ export default function Home() {
                 return true
             })
             .catch((e) => {
+                window.localStorage.clear()
+                window.location.reload()
                 throw e
             })
     }
@@ -101,18 +106,18 @@ export default function Home() {
     }, [])
 
   return (
-    <div className={styles.container}>
+    <Paper elevation={3} className={styles.container}>
       <MyHead title={'Home'}/>
 
       <main className={styles.main}>
         <MyTitle/>
-          <div className={styles.content}>
-              <div className={styles.content_left}>
+          <Paper elevation={5} className={styles.content}>
+              <Box className={styles.content_left}>
                   { name !== "" ? <Welcome username={name}/> : <Connexion/> }
                   <Search handleFav={handleAdd} username={name} token={token}
                             tab={curFav.Favorites} handleDelete={handleDelete}/>
-              </div>
-              <div className={styles.content_right}>
+              </Box>
+              <Box className={styles.content_right}>
                   { name !== "" && (
                       <CurrentLocation city={cur_loc.city} country={cur_loc.country}
                                        precipitation={cur_loc.precipitation} weather={cur_loc.weather}/>
@@ -120,10 +125,10 @@ export default function Home() {
                   { name !== "" && curFav.isFavorite && (
                       <Favorites tab={curFav.Favorites} handleDelete={handleDelete} username={name} token={token}/>
                   )}
-              </div>
-          </div>
+              </Box>
+          </Paper>
       </main>
 
-    </div>
+    </Paper>
   )
 }

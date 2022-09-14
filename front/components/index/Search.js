@@ -4,10 +4,28 @@ import Image from "next/image";
 import {useEffect, useState} from "react";
 import {deleteFavorite, postFavorite} from "../../queries/favorite";
 import {postLocation} from "../../queries/location";
+import {Box, Button, Paper, TextField} from "@mui/material";
+
+function FavButtons({addFav, removeFav, fav}) {
+    return (
+        <Box>
+            {fav === false ?
+                <Button variant={"outlined"} onClick={addFav}>
+                    <Image width={"20px"} height={"20px"} src={"/icons/star.png"}/>
+                </Button>
+                :
+                <Button onClick={removeFav}>
+                    <Image width={"20px"} height={"20px"} src={"/icons/star-in-fav.png"}/>
+                </Button>
+            }
+        </Box>
+    )
+}
 
 function Search({handleFav, username, token, tab, handleDelete}) {
     const [fav, setFav] = useState(false)
     const [search, setSearch] = useState("")
+    const [err, setErr] = useState([false, false])
 
     useEffect(() => {
         isFav(search.city, search.country)
@@ -17,6 +35,19 @@ function Search({handleFav, username, token, tab, handleDelete}) {
         let city = document.querySelector('#city').value
         let country = document.querySelector('#country').value
 
+        let error = [false, false]
+
+        if (!city)
+            error[0] = true
+        if (!country)
+            error[1] = true
+        if (!country || !city) {
+            setErr(error)
+            return false
+        }
+
+        setErr([false, false])
+
         e.preventDefault()
         await postLocation(city, country)
             .then ((res) => {
@@ -24,7 +55,7 @@ function Search({handleFav, username, token, tab, handleDelete}) {
                 isFav(city, country)
             })
             .catch(() => {
-                alert('Location doesn\'t found')
+                alert('Location not found')
             })
     }
 
@@ -78,32 +109,33 @@ function Search({handleFav, username, token, tab, handleDelete}) {
     }
 
     return (
-        <div className={styles.search_box}>
-            <form onSubmit={searchLocation} className={styles.content_search}>
-                <label htmlFor={"city"}>City :</label>
-                <input required type={'text'} id={"city"} name={"city"}/>
-                <label htmlFor={"country"}>Country :</label>
-                <input required type={'text'} id={"country"} name={"country"}/>
-                <button className={styles.button_search}>Search</button>
-            </form>
+        <Paper className={styles.search_box}>
+            <Box component={"form"} autoComplete={"off"} className={styles.content_search} sx={{
+                '& .MuiTextField-root': { m: 1, width: '25ch' },}}>
+                <TextField error={err[0]} required label={"City"} id={"city"}/>
+                <TextField error={err[1]} required label={"Country"} id={"country"}/>
+                <Button onClick={searchLocation} className={styles.button_search}>Search</Button>
+            </Box>
+
+            {/*<form onSubmit={searchLocation} className={styles.content_search}>*/}
+            {/*    /!*<label htmlFor={"city"}>City :</label>*!/*/}
+            {/*    /!*<input required type={'text'} id={"city"} name={"city"}/>*!/*/}
+            {/*    /!*<label htmlFor={"country"}>Country :</label>*!/*/}
+            {/*    /!*<input required type={'text'} id={"country"} name={"country"}/>*!/*/}
+            {/*    /!*<button className={styles.button_search}>Search</button>*!/*/}
+            {/*</form>*/}
             { search !== "" && (
-                <div className={styles.temperature}>
+                <Paper elevation={6} className={styles.temperature}>
                     {search.city}<br/>
                     {search.country}<br/>
                     {search.weather}°C<br/>
                     {search.rain}%<br/>
-                    {fav === false ?
-                        <button onClick={addFav}>
-                            <Image width={"20px"} height={"20px"} src={"/icons/star.png"}/>
-                        </button>
-                        :
-                        <button onClick={removeFav}>
-                            <Image width={"20px"} height={"20px"} src={"/icons/star-in-fav.png"}/>
-                        </button>
-                    }
-                </div>
+                    { username !== "" &&(
+                        <FavButtons addFav={addFav} removeFav={removeFav} fav={fav}/>
+                    )}
+                </Paper>
             )}
-        </div>
+        </Paper>
     )
 }
 

@@ -14,9 +14,10 @@ export class FavoriteService {
 				@InjectRepository(FavoriteEntity) private favoriteRepository: Repository<FavoriteEntity>) {}
 
 	async addFavoriteLocation(city: string, country: string, id: number) {
-		console.log(city, country)
 		if (!city || !country)
 			throw new BadRequestException()
+		city = city.charAt(0).toUpperCase() + city.slice(1).toLowerCase()
+		country = country.charAt(0).toUpperCase() + country.slice(1).toLowerCase()
 		const user = await this.userService.getUser(id)
 		let location: LocationEntity | void = await this.locationService.verifyLocation(city, country)
 		if (!location)
@@ -33,6 +34,8 @@ export class FavoriteService {
 	async deleteFavoriteLocation(city: string, country: string, id: number) {
 		if (!city || !country)
 			throw new BadRequestException()
+		city = city.charAt(0).toUpperCase() + city.slice(1).toLowerCase()
+		country = country.charAt(0).toUpperCase() + country.slice(1).toLowerCase()
 		const user = await this.userService.getUser(id)
 		let location: LocationEntity | void = await this.locationService.verifyLocation(city, country)
 		if (!location)

@@ -1,5 +1,6 @@
 import {useRouter} from "next/router";
 import styles from "../../styles/Home.module.css";
+import {Box, Button, Typography} from "@mui/material";
 
 function Welcome({username}) {
     const router = useRouter()
@@ -11,10 +12,10 @@ function Welcome({username}) {
     }
 
     return (
-        <div className={styles.welcome}>
-            <p>Welcome {username} !</p>
-            <button onClick={disconnect} className={styles.text}>Disconnect</button>
-        </div>
+        <Box className={styles.welcome}>
+            <Typography component={"p"} variant={"h4"}>Welcome {username} !</Typography>
+            <Button variant={"contained"} onClick={disconnect}>Disconnect</Button>
+        </Box>
 
     )
 }

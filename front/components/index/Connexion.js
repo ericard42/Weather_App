@@ -1,9 +1,10 @@
 import styles from "../../styles/Home.module.css";
 import Link from "next/link";
+import {Box} from "@mui/material";
 
 function Connexion() {
     return (
-        <div className={styles.login_box}>
+        <Box className={styles.login_box}>
             <Link href={"/login"}>
                 <a className={styles.text}>
                     Login
@@ -15,7 +16,7 @@ function Connexion() {
                     Inscription
                 </a>
             </Link>
-        </div>
+        </Box>
     )
 }
 

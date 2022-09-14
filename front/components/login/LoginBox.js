@@ -1,9 +1,11 @@
 import {useRouter} from "next/router";
 import {authUser} from "../../queries/user";
 import styles from "../../styles/Sign-In.module.css";
-import FormBox from "../global/FormBox";
+import {Box, Button, TextField} from "@mui/material";
+import {useState} from "react";
 
 function LoginBox() {
+    const [err, setErr] = useState([false, false])
     let router = useRouter()
 
     const validationForm = async (e) => {
@@ -12,8 +14,13 @@ function LoginBox() {
         const name = document.querySelector('#Username').value
         const password = document.querySelector('#Password').value
 
+        let error = [false, false]
         if (!name || !password) {
-            alert('Please enter your username and your password.')
+            if (!name)
+                error[0] = true
+            if (!password)
+                error[1] = true
+            setErr(error)
             return false
         }
 
@@ -33,14 +40,15 @@ function LoginBox() {
 
 
     return (
-        <div className={styles.login_box}>
-            <form onSubmit={validationForm} className={styles.fields}>
-                <h2 className={styles.login_text}>Login</h2>
-                <FormBox type={'text'} name={"Username"}/>
-                <FormBox type={'password'} name={"Password"}/>
-                <button className={styles.login_button}>Login</button>
-            </form>
-        </div>
+        <Box className={styles.login_box}>
+            <h2 className={styles.login_text}>Login</h2>
+            <Box component={"form"} autoComplete={"off"} className={styles.field_box} sx={{
+                '& .MuiTextField-root': { m: 1, width: '25ch' },}}>
+                <TextField error={err[0]} required label={"Username"} id={"Username"}/>
+                <TextField error={err[1]} required type={"password"} label={"Password"} id={"Password"}/>
+                <Button variant={"outlined"} onClick={validationForm}>Login</Button>
+            </Box>
+        </Box>
     )
 }
 
