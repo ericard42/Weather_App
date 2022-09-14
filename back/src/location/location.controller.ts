@@ -9,7 +9,6 @@ export class LocationController {
 	@Post()
 	async searchLocation(@Body() location: LocationDto) {
 		const loc = await this.locationService.verifyLocation(location.city, location.country)
-		console.log(loc)
 		if (loc)
 			return await this.locationService.getWeather(loc.id)
 	}

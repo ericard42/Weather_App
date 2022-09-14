@@ -31,7 +31,6 @@ export class UserService {
 		let location: LocationEntity | void = await this.locationService.verifyLocation(user.city, user.country)
 		if (!location)
 			location = await this.locationService.getLocation(user.city, user.country)
-		console.log(location)
 		const salt = await bcrypt.genSalt()
 		const newUser = {
 			email: user.email,
@@ -45,7 +44,6 @@ export class UserService {
 
 	@UseGuards(JwtAuthGuard)
 	async getUser(id: number) {
-		console.log(id)
 		if (!id)
 			throw new NotFoundException()
 		const user = await this.userRepository.findOneBy({id: id})
