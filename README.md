@@ -1,6 +1,9 @@
 
 # Weather App
 
+An app to get weather of a city. If you're log in, you can add some location in favorites.
+You can only search city and country in English. Ex: Paris - France, Rome - Italy, Barcelona - Spain...
+Unfortunatly, the application doesn't accept whitespace, so some location can be missing.
 
 
 ## Tech Stack
