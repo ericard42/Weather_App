@@ -19,8 +19,8 @@ function Search({handleFav, username, token, tab, handleDelete}) {
                 setSearch(res)
                 isFav(city, country)
             })
-            .catch((e) => {
-                throw e
+            .catch(() => {
+                alert('Location doesn\'t found')
             })
     }
 

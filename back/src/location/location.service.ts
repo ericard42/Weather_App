@@ -11,7 +11,7 @@ export class LocationService {
 				private configService: ConfigService) {}
 
 	async verifyLocation(city: string, country: string) {
-		let location: LocationEntity = await this.locationRepository.findOneBy({city: city, country: country})
+		let location: LocationEntity = await this.locationRepository.findOneBy({city: city.toLowerCase(), country: country.toLowerCase()})
 		if (location)
 			return location
 		const that = this
@@ -24,12 +24,14 @@ export class LocationService {
 				const findCountry = res.data.data[0].country
 				const latitude = res.data.data[0].latitude
 				const longitude = res.data.data[0].longitude
-				if (findCity !== city || findCountry !== country)
+				console.log(findCity)
+				if ((!findCity || findCity.toLowerCase() !== city.toLowerCase())
+					|| (!findCountry || findCountry.toLowerCase() !== country.toLowerCase()))
 					throw new BadRequestException('Location doesn\'t exist')
-				return await that.addLocation(city, country, latitude, longitude)
+				return await that.addLocation(city.toLowerCase(), country.toLowerCase(), latitude, longitude)
 			})
 			.catch((err) => {
-				if(err.response.statusText && err.reponse.status)
+				if (err.response.statusText && err.reponse.status)
 					throw new HttpException(err.response.statusText, err.response.status)
 				throw new HttpException(err.response.message, err.response.statusCode)
 			})
@@ -46,7 +48,7 @@ export class LocationService {
 	}
 
 	async getLocation(city: string, country: string) {
-		return await this.locationRepository.findOneBy({city: city, country: country})
+		return await this.locationRepository.findOneBy({city: city.toLowerCase(), country: country.toLowerCase()})
 	}
 
 	async getLocationByID(id: number) {
@@ -68,8 +70,8 @@ export class LocationService {
 				const temperature = res.data.hourly.temperature_2m[index]
 				const precipitation = res.data.hourly.precipitation[index]
 				return {
-					city: location.city,
-					country: location.country,
+					city: location.city.charAt(0).toUpperCase() + location.city.slice(1).toLowerCase(),
+					country: location.country.charAt(0).toUpperCase() + location.city.slice(1).toLowerCase(),
 					weather: res.data.hourly.temperature_2m[index],
 					rain: res.data.hourly.precipitation[index],
 				}
