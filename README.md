@@ -21,7 +21,7 @@ one would have been useful for the scale of this application.
 
 To run this project, you will need to add the following environment variables to your .env file.
 
-Create .env in back and front folders from the env.templates.
+Create .env in back folder from the env.templates.
 
 To use the back, you need an API Key from [here](https://positionstack.com/quickstart) (Free until 25000 requests)
 
