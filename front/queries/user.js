@@ -3,7 +3,7 @@ import axios from "axios";
 export async function getUser(username, token) {
     return await axios({
         method: 'GET',
-        url: "http://localhost:3000/user/" + username,
+        url: "http://" + process.env.NEXT_PUBLIC_BACK_HOST + ":3000/user/" + username,
         headers: {
             Authorization: 'Bearer ' + token,
             "content-type": "application/json",
@@ -20,7 +20,7 @@ export async function getUser(username, token) {
 export async function postUser(data) {
     return await axios({
         method: 'POST',
-        url: 'http://localhost:3000/user',
+        url: "http://" + process.env.NEXT_PUBLIC_BACK_HOST + ":3000/user",
         data: data
     })
         .then((res) => {
@@ -34,7 +34,7 @@ export async function postUser(data) {
 export async function authUser(username, password) {
     return await axios({
         method: 'POST',
-        url: "http://localhost:3000/auth",
+        url: "http://" + process.env.NEXT_PUBLIC_BACK_HOST + ":3000/auth",
         data: {
             username: username,
             password: password

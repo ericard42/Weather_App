@@ -3,7 +3,7 @@ import axios from "axios";
 export async function deleteFavorite(username, tab, token, index) {
     await axios ({
         method: "DELETE",
-        url: "http://localhost:3000/favorite/" + username,
+        url: "http://" + process.env.NEXT_PUBLIC_BACK_HOST + ":3000/favorite/" + username,
         data: {
             city: tab[index].city,
             country: tab[index].country
@@ -21,7 +21,7 @@ export async function deleteFavorite(username, tab, token, index) {
 export async function postFavorite(location, username, token) {
     return await axios ({
         method: "POST",
-        url: 'http://localhost:3000/favorite/' + username,
+        url: "http://" + process.env.NEXT_PUBLIC_BACK_HOST + ":3000/favorite/" + username,
         data: {
             city: location.city,
             country: location.country
@@ -39,7 +39,7 @@ export async function postFavorite(location, username, token) {
 export async function getFavorite(username, token) {
     return await axios({
         method: 'GET',
-        url: 'http://localhost:3000/favorite/' + username,
+        url: "http://" + process.env.NEXT_PUBLIC_BACK_HOST + ":3000/favorite/" + username,
         headers: {
             Authorization: 'Bearer ' + token,
             "content-type": "application/json",

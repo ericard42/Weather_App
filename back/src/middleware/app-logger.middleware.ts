@@ -7,16 +7,12 @@ export class AppLoggerMiddleware implements NestMiddleware {
 	private logger = new Logger('HTTP')
 
 	use(req: Request, res: Response, next: () => void) {
+		const host = "http://" + process.env.HOST + ":8081"
 		const {headers, method, originalUrl: url} = req
-		//Autoriser uniquement le Front + Localhost + Postman
-		if (req.ip !== "::ffff:127.0.0.1" && req.ip !== "::1")
-			res.statusCode = HttpStatus.FORBIDDEN
 		res.on('close', () => {
 			const {statusCode} = res;
 			this.logger.log(`${method} ${url} ${statusCode} - ${headers["origin"]}`)
 		})
-		if (res.statusCode === HttpStatus.FORBIDDEN)
-			throw new ForbiddenException()
 		next();
 	}
 }
